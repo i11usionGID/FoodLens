@@ -1,0 +1,62 @@
+package com.example.foodlens.presentation.navigation
+
+import android.net.Uri
+import android.os.Bundle
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.foodlens.presentation.analise.FoodAnaliseScreen
+import com.example.foodlens.presentation.camera.CameraScreen
+import com.example.foodlens.presentation.welcome.WelcomeScreen
+
+@Composable
+fun NavGraph() {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Welcome.route
+    ) {
+        composable(Screen.Welcome.route) {
+            WelcomeScreen(
+                onCameraButtonClick = {
+                    navController.navigate(Screen.Camera.route)
+                }
+            )
+        }
+
+        composable(Screen.Camera.route) {
+            CameraScreen(
+                onTakePhotoClick = {
+                    navController.navigate(Screen.FoodAnalise.createRoute(it))
+                }
+            )
+        }
+
+        composable(Screen.FoodAnalise.route) {
+            val photoUri = Screen.FoodAnalise.getUri(it.arguments)
+            FoodAnaliseScreen(
+                photoUri = photoUri
+            )
+        }
+    }
+}
+
+sealed class Screen(val route: String) {
+
+    data object Welcome: Screen("welcome")
+
+    data object Camera: Screen("camera")
+
+    data object FoodAnalise: Screen("food_analise/{photoUri}") {
+
+        fun createRoute(photoUri: Uri): String {
+            return "food_analise/$photoUri"
+        }
+
+        fun getUri(arguments: Bundle?): Uri {
+            return arguments?.getString("photoUri")?.let { Uri.parse(it) } ?: Uri.EMPTY
+        }
+    }
+}

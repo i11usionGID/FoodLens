@@ -1,5 +1,6 @@
 package com.example.foodlens.presentation.camera
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,7 +19,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CameraScreen(
     modifier: Modifier = Modifier,
-    onTakePhotoClick: () -> Unit
+    onTakePhotoClick: (Uri) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         Column(
@@ -31,7 +32,7 @@ fun CameraScreen(
                     .background(Color.Black)
             )
             Box(modifier = Modifier.weight(1f)) {
-                // CameraPreview() или другое содержимое
+                //будущее место для камеры
             }
             Box(
                 modifier = Modifier
@@ -40,7 +41,9 @@ fun CameraScreen(
                     .background(Color.Black),
                 contentAlignment = Alignment.Center
             ) {
-                TakePhotoButton(onTakePhotoClick)
+                TakePhotoButton {
+                    Uri.EMPTY
+                }
             }
         }
     }
