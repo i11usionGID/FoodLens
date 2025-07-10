@@ -1,4 +1,4 @@
-package com.example.foodlens.ui.theme
+package com.example.foodlens.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
