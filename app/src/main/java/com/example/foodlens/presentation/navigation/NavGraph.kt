@@ -9,6 +9,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.foodlens.presentation.analise.FoodAnaliseScreen
 import com.example.foodlens.presentation.camera.CameraScreen
 import com.example.foodlens.presentation.welcome.WelcomeScreen
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun NavGraph() {
@@ -52,11 +55,14 @@ sealed class Screen(val route: String) {
     data object FoodAnalise: Screen("food_analise/{photoUri}") {
 
         fun createRoute(photoUri: Uri): String {
-            return "food_analise/$photoUri"
+            val encodedUri = URLEncoder.encode(photoUri.toString(), StandardCharsets.UTF_8.toString())
+            return "food_analise/$encodedUri"
         }
 
         fun getUri(arguments: Bundle?): Uri {
-            return arguments?.getString("photoUri")?.let { Uri.parse(it) } ?: Uri.EMPTY
+            val encoded = arguments?.getString("photoUri") ?: return Uri.EMPTY
+            val decoded = URLDecoder.decode(encoded, StandardCharsets.UTF_8.toString())
+            return Uri.parse(decoded)
         }
     }
 }
