@@ -4,5 +4,5 @@ import android.net.Uri
 
 interface OcrRepository {
 
-    fun extractImage(photoUri: Uri): String
+    suspend fun extractImage(photoUri: Uri): String
 }

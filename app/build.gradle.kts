@@ -52,7 +52,13 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.extensions)
-    implementation(libs.mlkit.text)
+    implementation(libs.kotlinx.coroutines.play.services)
+
+    implementation(libs.tess.two)
+    implementation (libs.ucrop)
+
+
+    implementation(libs.coil.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

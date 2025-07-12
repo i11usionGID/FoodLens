@@ -7,7 +7,7 @@ class GetTextFromPhotoUseCase @Inject constructor(
     private val ocrRepository: OcrRepository
 ){
 
-    operator fun invoke(photoUri: Uri): String {
+    suspend operator fun invoke(photoUri: Uri): String {
         return ocrRepository.extractImage(photoUri)
     }
 }

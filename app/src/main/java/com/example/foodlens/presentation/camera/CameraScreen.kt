@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import java.io.File
@@ -45,7 +46,7 @@ import java.util.Locale
 @Composable
 fun CameraScreen(
     modifier: Modifier = Modifier,
-    onTakePhotoClick: (Uri) -> Unit
+    onTakePhotoClick: (Uri) -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
