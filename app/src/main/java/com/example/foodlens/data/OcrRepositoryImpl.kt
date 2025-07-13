@@ -31,15 +31,11 @@ class OcrRepositoryImpl @Inject constructor(
         try {
             val inputStream = context.contentResolver.openInputStream(photoUri)
             val bitmap = BitmapFactory.decodeStream(inputStream)
-
             tessBaseAPI.setImage(bitmap)
             val text = tessBaseAPI.utF8Text
-
-            Log.d(TAG, "Распознанный текст: $text")
             return@withContext text
 
         } catch (e: Exception) {
-            Log.e(TAG, "Ошибка OCR: ${e.message}", e)
             return@withContext ""
         }
     }
@@ -73,7 +69,6 @@ class OcrRepositoryImpl @Inject constructor(
                     output.flush()
                 }
             }
-            Log.d(TAG, "Файл ${destFile.name} скопирован в ${destFile.absolutePath}")
         } catch (e: Exception) {
             Log.e(TAG, "Не удалось скопировать файл распознавания: ${e.message}", e)
         }
