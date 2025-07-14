@@ -40,13 +40,11 @@ fun NavGraph() {
 
         composable(Screen.Crop.route) {
             val inputUri = Screen.Crop.getUri(it.arguments)
-
             CropScreen(
                 inputUri = inputUri,
                 onCropFinished = { croppedUri ->
                     navController.navigate(Screen.FoodAnalise.createRoute(croppedUri))
                 }
-
             )
         }
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,65 +41,87 @@ fun FoodAnaliseScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        when (val currentState = state) {
-            is FoodAnaliseState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+    Scaffold(
+        modifier = modifier
+    ) { innerPadding ->
+        Surface(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            when (val currentState = state) {
+                is FoodAnaliseState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
-            }
 
-            is FoodAnaliseState.Success -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    Text(
-                        text = "Результат анализа",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Image(
-                        painter = rememberAsyncImagePainter(photoUri),
-                        contentDescription = "Фото ингредиентов",
+                is FoodAnaliseState.Success -> {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp),
-                        contentScale = ContentScale.Crop
-                    )
+                            .fillMaxSize()
+                            .padding(16.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Text(
+                            text = "Результат анализа",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    Text(
-                        text = currentState.result,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                        Image(
+                            painter = rememberAsyncImagePainter(photoUri),
+                            contentDescription = "Фото ингредиентов",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
+                            contentScale = ContentScale.Crop
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = currentState.result.healthCategory,
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = currentState.result.healthyReasons,
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            text = currentState.result.unhealthyReasons,
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                 }
-            }
 
-            is FoodAnaliseState.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = currentState.message,
-                        color = Color.Red,
-                        fontSize = 16.sp
-                    )
+                is FoodAnaliseState.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = currentState.message,
+                            color = Color.Red,
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             }
         }

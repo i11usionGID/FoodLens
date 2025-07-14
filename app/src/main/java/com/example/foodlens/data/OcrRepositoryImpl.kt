@@ -33,6 +33,7 @@ class OcrRepositoryImpl @Inject constructor(
             val bitmap = BitmapFactory.decodeStream(inputStream)
             tessBaseAPI.setImage(bitmap)
             val text = tessBaseAPI.utF8Text
+            Log.d("OcrRepository", "$text")
             return@withContext text
 
         } catch (e: Exception) {

@@ -41,6 +41,7 @@ fun CropScreen(
         val options = UCrop.Options().apply {
             setCompressionQuality(80)
             setFreeStyleCropEnabled(true)
+            setToolbarTitle("Обрезка")
         }
 
         val intent = UCrop.of(inputUri, destinationUri)
@@ -49,4 +50,5 @@ fun CropScreen(
 
         launcher.launch(intent)
     }
+
 }

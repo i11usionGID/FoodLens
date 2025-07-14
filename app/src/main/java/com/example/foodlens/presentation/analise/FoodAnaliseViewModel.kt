@@ -1,12 +1,13 @@
 package com.example.foodlens.presentation.analise
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodlens.domain.AnaliseTextUseCase
 import com.example.foodlens.domain.FormatResultUseCase
 import com.example.foodlens.domain.GetTextFromPhotoUseCase
+import com.example.foodlens.domain.model.ProductAnalysesResult
+import com.example.foodlens.domain.model.UiModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -39,9 +40,9 @@ class FoodAnaliseViewModel @AssistedInject constructor(
 
                 val analysisResult = analiseTextUseCase(rawText)
 
-                val formatted = formatResultUseCase(analysisResult)
+                val uiModel = formatResultUseCase(analysisResult)
 
-                _state.value = FoodAnaliseState.Success(formatted.toString())
+                _state.value = FoodAnaliseState.Success(uiModel)
 
             } catch (e: Exception) {
                 _state.value = FoodAnaliseState.Error("Ошибка при обработке фото: ${e.message}")
@@ -60,6 +61,6 @@ class FoodAnaliseViewModel @AssistedInject constructor(
 
 sealed interface FoodAnaliseState {
     data object Loading : FoodAnaliseState
-    data class Success(val result: String) : FoodAnaliseState
+    data class Success(val result: UiModel) : FoodAnaliseState
     data class Error(val message: String) : FoodAnaliseState
 }

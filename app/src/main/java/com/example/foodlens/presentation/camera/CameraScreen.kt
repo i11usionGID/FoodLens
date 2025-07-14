@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -59,7 +60,7 @@ fun CameraScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp)
-                    .background(Color.Black)
+                    .background(MaterialTheme.colorScheme.onBackground)
             )
             Box(modifier = Modifier.weight(1f)) {
                 CameraPreview(
@@ -74,7 +75,7 @@ fun CameraScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp)
-                    .background(Color.Black),
+                    .background(MaterialTheme.colorScheme.onBackground),
                 contentAlignment = Alignment.Center
             ) {
                 TakePhotoButton {
@@ -104,12 +105,18 @@ fun TakePhotoButton(
         Box(
             modifier = Modifier
                 .size(80.dp)
-                .background(Color.White, shape = CircleShape)
+                .background(
+                    MaterialTheme.colorScheme.background,
+                    shape = CircleShape
+                )
         )
         Box(
             modifier = Modifier
                 .size(60.dp)
-                .background(Color.LightGray, shape = CircleShape)
+                .background(
+                    MaterialTheme.colorScheme.surface,
+                    shape = CircleShape
+                )
         )
     }
 }
