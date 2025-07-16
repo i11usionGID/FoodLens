@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.foodlens.domain.AnaliseTextUseCase
 import com.example.foodlens.domain.FormatResultUseCase
 import com.example.foodlens.domain.GetTextFromPhotoUseCase
-import com.example.foodlens.domain.model.ProductAnalysesResult
 import com.example.foodlens.domain.model.UiModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

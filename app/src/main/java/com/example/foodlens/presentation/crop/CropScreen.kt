@@ -6,10 +6,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.yalantis.ucrop.UCrop
 import java.io.File
@@ -17,10 +13,10 @@ import java.io.File
 @Composable
 fun CropScreen(
     inputUri: Uri,
-    onCropFinished: (Uri) -> Unit
+    onCropFinished: (Uri) -> Unit,
+    onCropCancelled: () -> Unit
 ) {
     val context = LocalContext.current
-    var croppedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -28,12 +24,10 @@ fun CropScreen(
         if (result.resultCode == Activity.RESULT_OK) {
             val resultUri = UCrop.getOutput(result.data!!)
             if (resultUri != null) {
-                croppedImageUri = resultUri
                 onCropFinished(resultUri)
             }
-        } else if (result.resultCode == UCrop.RESULT_ERROR) {
-            val cropError = UCrop.getError(result.data!!)
-            println("Crop error: $cropError")
+        } else {
+            onCropCancelled()
         }
     }
     LaunchedEffect(inputUri) {

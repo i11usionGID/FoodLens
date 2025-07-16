@@ -43,7 +43,14 @@ fun NavGraph() {
             CropScreen(
                 inputUri = inputUri,
                 onCropFinished = { croppedUri ->
-                    navController.navigate(Screen.FoodAnalise.createRoute(croppedUri))
+                    navController.navigate(Screen.FoodAnalise.createRoute(croppedUri)) {
+                        popUpTo(Screen.Crop.route) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onCropCancelled = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -59,13 +66,14 @@ fun NavGraph() {
 
 sealed class Screen(val route: String) {
 
-    data object Welcome: Screen("welcome")
+    data object Welcome : Screen("welcome")
 
-    data object Camera: Screen("camera")
+    data object Camera : Screen("camera")
 
     data object Crop : Screen("crop/{photoUri}") {
         fun createRoute(photoUri: Uri): String {
-            val encodedUri = URLEncoder.encode(photoUri.toString(), StandardCharsets.UTF_8.toString())
+            val encodedUri =
+                URLEncoder.encode(photoUri.toString(), StandardCharsets.UTF_8.toString())
             return "crop/$encodedUri"
         }
 
@@ -77,10 +85,11 @@ sealed class Screen(val route: String) {
     }
 
 
-    data object FoodAnalise: Screen("food_analise/{croppedPhotoUri}") {
+    data object FoodAnalise : Screen("food_analise/{croppedPhotoUri}") {
 
         fun createRoute(croppedPhotoUri: Uri): String {
-            val encodedUri = URLEncoder.encode(croppedPhotoUri.toString(), StandardCharsets.UTF_8.toString())
+            val encodedUri =
+                URLEncoder.encode(croppedPhotoUri.toString(), StandardCharsets.UTF_8.toString())
             return "food_analise/$encodedUri"
         }
 
