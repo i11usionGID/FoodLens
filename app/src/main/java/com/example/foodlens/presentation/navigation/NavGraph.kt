@@ -6,10 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.foodlens.presentation.analise.FoodAnaliseScreen
-import com.example.foodlens.presentation.camera.CameraScreen
-import com.example.foodlens.presentation.crop.CropScreen
-import com.example.foodlens.presentation.welcome.WelcomeScreen
+import com.example.foodlens.presentation.screens.analise.FoodAnaliseScreen
+import com.example.foodlens.presentation.screens.camera.CameraScreen
+import com.example.foodlens.presentation.screens.crop.CropScreen
+import com.example.foodlens.presentation.screens.welcome.WelcomeScreen
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -58,7 +58,15 @@ fun NavGraph() {
         composable(Screen.FoodAnalise.route) {
             val croppedPhotoUri = Screen.FoodAnalise.getUri(it.arguments)
             FoodAnaliseScreen(
-                photoUri = croppedPhotoUri
+                photoUri = croppedPhotoUri,
+                onFoodAnaliseFinish = {
+                    navController.navigate(Screen.Welcome.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
     }

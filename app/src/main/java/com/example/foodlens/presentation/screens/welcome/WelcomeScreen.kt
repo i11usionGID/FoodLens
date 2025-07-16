@@ -1,4 +1,4 @@
-package com.example.foodlens.presentation.welcome
+package com.example.foodlens.presentation.screens.welcome
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

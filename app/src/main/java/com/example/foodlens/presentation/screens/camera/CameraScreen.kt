@@ -1,4 +1,4 @@
-package com.example.foodlens.presentation.camera
+package com.example.foodlens.presentation.screens.camera
 
 import android.content.Context
 import android.net.Uri

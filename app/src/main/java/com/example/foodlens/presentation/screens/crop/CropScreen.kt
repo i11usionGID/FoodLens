@@ -1,4 +1,4 @@
-package com.example.foodlens.presentation.crop
+package com.example.foodlens.presentation.screens.crop
 
 import android.app.Activity
 import android.net.Uri
