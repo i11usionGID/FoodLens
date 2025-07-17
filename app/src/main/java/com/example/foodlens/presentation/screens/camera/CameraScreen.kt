@@ -127,15 +127,21 @@ fun CameraPreview(
     onImageCaptureReady: (ImageCapture) -> Unit
 ) {
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
-    val previewView = remember { PreviewView(context).apply {
-        layoutParams = FrameLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        scaleType = PreviewView.ScaleType.FILL_CENTER
-    }}
+    val previewView = remember {
+        PreviewView(context).apply {
+            layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            scaleType = PreviewView.ScaleType.FILL_CENTER
+        }
+    }
 
-    AndroidView(factory = { previewView })
+    AndroidView(
+        factory = {
+            previewView
+        }
+    )
 
     LaunchedEffect(cameraProviderFuture) {
         val cameraProvider = cameraProviderFuture.get()
