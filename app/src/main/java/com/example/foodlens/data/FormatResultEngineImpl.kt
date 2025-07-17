@@ -9,8 +9,8 @@ class FormatResultEngineImpl @Inject constructor(): FormatResultEngine {
 
     override fun formatResult(productAnalysesResult: ProductAnalysesResult): UiModel {
         val healthCategory = "Категория полезности: ${productAnalysesResult.category.categoryName}"
-        val healthyReasons = "Полезные ингридиенты: ${formatReasons(productAnalysesResult.healthyReasons)}"
-        val unhealthyReasons = "Вредные ингридиенты: ${formatReasons(productAnalysesResult.unhealthyReasons)}"
+        val healthyReasons = "Полезные ингредиенты: ${formatReasons(productAnalysesResult.healthyReasons)}"
+        val unhealthyReasons = "Вредные ингредиенты: ${formatReasons(productAnalysesResult.unhealthyReasons)}"
         return UiModel(
             healthCategory = healthCategory,
             healthyReasons = healthyReasons,

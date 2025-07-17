@@ -75,7 +75,7 @@ fun FoodAnaliseScreen(
                             text = "Результат анализа",
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.onBackground
                         )
 
                         Spacer(modifier = Modifier.height(16.dp))
