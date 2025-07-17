@@ -64,8 +64,7 @@ class RuleEngineImpl @Inject constructor(
             harmfulIndicators = ruleModel.harmfulIndicators
             healthyIndicators = ruleModel.healthyIndicators
         } catch (e: Exception) {
-            throw IllegalStateException("Не удалось загрузить файл с правилами.")
+            throw IllegalStateException("Не удалось загрузить файл с правилами: ${e.message}", e)
         }
-
     }
 }

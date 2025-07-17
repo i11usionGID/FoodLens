@@ -79,7 +79,7 @@ class OcrRepositoryImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Copy tessdata failed", e)
+            throw IllegalStateException("Ошибка загрузки Tesseract traineddata: ${e.message}", e)
         }
     }
 }

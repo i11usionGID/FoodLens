@@ -1,6 +1,7 @@
 [versions]
 agp = "8.8.2"
 coilCompose = "2.5.0"
+gson = "2.13.1"
 kotlin = "2.1.10"
 kotlinxCoroutinesPlayServices = "1.7.3"
 ksp = "2.1.10-1.0.29"
@@ -22,6 +23,7 @@ ucrop = "2.2.8"
 [libraries]
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }

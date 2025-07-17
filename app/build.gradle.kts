@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.extensions)
     implementation(libs.kotlinx.coroutines.play.services)
-    implementation ("com.google.code.gson:gson:2.13.1")
+    implementation (libs.gson)
     implementation(libs.tess.two)
     implementation(libs.opencv)
     implementation (libs.ucrop)

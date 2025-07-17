@@ -44,5 +44,4 @@ fun CropScreen(
 
         launcher.launch(intent)
     }
-
 }
