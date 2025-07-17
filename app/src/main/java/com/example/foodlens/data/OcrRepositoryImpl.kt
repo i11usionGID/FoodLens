@@ -66,7 +66,9 @@ class OcrRepositoryImpl @Inject constructor(
         if (!tessDir.exists()) tessDir.mkdirs()
         val trained = File(tessDir, "$TESS_LANG.traineddata")
         if (!trained.exists()) copyTrainedDataIfNeeded(trained)
-        return TessBaseAPI().apply { init(context.filesDir.resolve("tesseract").absolutePath, TESS_LANG) }
+        return TessBaseAPI().apply {
+            init(context.filesDir.resolve("tesseract").absolutePath, TESS_LANG)
+        }
     }
 
     private fun copyTrainedDataIfNeeded(dest: File) {

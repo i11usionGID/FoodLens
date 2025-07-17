@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.camera.extensions)
     implementation(libs.kotlinx.coroutines.play.services)
+    implementation (libs.gson)
     implementation(libs.tess.two)
     implementation(libs.opencv)
     implementation (libs.ucrop)
