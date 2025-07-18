@@ -113,7 +113,7 @@ fun TakePhotoButton(
             modifier = Modifier
                 .size(60.dp)
                 .background(
-                    MaterialTheme.colorScheme.surface,
+                    MaterialTheme.colorScheme.secondary,
                     shape = CircleShape
                 )
         )

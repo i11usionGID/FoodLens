@@ -2,12 +2,16 @@ package com.example.foodlens.presentation.screens.welcome
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -21,10 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodlens.R
@@ -39,14 +43,21 @@ fun WelcomeScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onCameraButtonClick,
-                containerColor = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onBackground,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = CircleShape
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.scan),
-                    contentDescription = "Сканировать этикетку"
-                )
+                Box(
+                    modifier = Modifier
+                        .width(56.dp)
+                        .height(56.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.scan),
+                        contentDescription = "Сканировать этикетку"
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -57,14 +68,25 @@ fun WelcomeScreen(
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Text(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                text = "FoodLens",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.lens_logo),
+                    contentDescription = "Логотип приложения"
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = "FoodLens",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
 
             ExpandableInfoBlock(
@@ -72,8 +94,17 @@ fun WelcomeScreen(
                 content = "FoodLens - это приложение, которое может определить полезность продукта" +
                         " питания по фотографии его состава. Приложение использует OCR для " +
                         "распознавания состава продукта и определения его полезности по " +
-                        "заданным правилам и паттернам. Чтобы начать, нажмите кнопку в правом " +
+                        "заданным правилам и паттернам.\nЧтобы начать, нажмите кнопку в правом " +
                         "нижнем углу экрана."
+            )
+
+            ExpandableInfoBlock(
+                title = "Как увеличить эффективность анализа?",
+                content = "Чтобы приложение максимально быстро проанализировало состав, " +
+                        "вам нужно обрезать фотографию, оставив только текст состава.\nЧтобы " +
+                        "приложение смогло найти как можно больше вредных ингредиентов, " +
+                        "нужно сделать фотографию максимально хорошего качества, без бликов и " +
+                        "выровнять ее на экране обрезки."
             )
 
             ExpandableInfoBlock(
@@ -108,7 +139,13 @@ fun ExpandableInfoBlock(
             .padding(vertical = 8.dp)
             .clickable { expanded.value = !expanded.value },
         shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
