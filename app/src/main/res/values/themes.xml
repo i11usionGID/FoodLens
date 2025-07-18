@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.FoodLens" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.UCropEdgeToEdgeFix" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
 </resources>
+
