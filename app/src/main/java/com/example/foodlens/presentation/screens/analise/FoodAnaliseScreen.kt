@@ -91,7 +91,8 @@ fun FoodAnaliseScreen(
             when (val currentState = state) {
                 is FoodAnaliseState.Loading -> {
                     Column(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -185,6 +186,7 @@ fun FoodAnaliseScreen(
 
                 is FoodAnaliseState.Success -> {
                     val result = currentState.result
+                    var showOcrDialog by remember { mutableStateOf(false) }
                     var showPhotoBlock by remember { mutableStateOf(false) }
                     var showRecommendationBlock by remember { mutableStateOf(false) }
                     var showIndexDescription by remember { mutableStateOf(false) }
@@ -346,6 +348,44 @@ fun FoodAnaliseScreen(
                                             .height(200.dp),
                                         contentScale = ContentScale.Crop
                                     )
+
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                color = MaterialTheme.colorScheme.surface,
+                                                shape = RoundedCornerShape(8.dp)
+                                            )
+                                            .clickable {
+                                            showOcrDialog = true
+                                        },
+                                        contentAlignment = Alignment.BottomEnd
+                                    ) {
+                                        Text(
+                                            text = "распознанный текст",
+                                            color = extraColors.gray300,
+                                            fontSize = 12.sp
+                                        )
+                                    }
+
+                                    if (showOcrDialog) {
+                                        AlertDialog(
+                                            onDismissRequest = { showOcrDialog = false },
+                                            confirmButton = {
+                                                Button(onClick = { showOcrDialog = false }) {
+                                                    Text("Закрыть")
+                                                }
+                                            },
+                                            title = {
+                                                Text(
+                                                    text = "Распознанный текст",
+                                                    fontSize = 16.sp
+                                                )
+                                            },
+                                            text = { Text(text = result.ocrText) },
+                                            containerColor = MaterialTheme.colorScheme.background
+                                        )
+                                    }
                                 }
                             )
                         }
@@ -449,7 +489,7 @@ fun FoodAnaliseScreen(
                                 },
                                 content = {
                                     Column {
-                                        if (result.unhealthyIngredients.isEmpty()) {
+                                        if (result.harmfulIngredients.isEmpty()) {
                                             TextWithPoint(
                                                 extraColors = extraColors,
                                                 text = "Не обнаружено"
@@ -460,7 +500,7 @@ fun FoodAnaliseScreen(
                                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                                             ) {
-                                                result.unhealthyIngredients.forEach { (name, description) ->
+                                                result.harmfulIngredients.forEach { (name, description) ->
                                                     Button(
                                                         onClick = {
                                                             selectedIngredient = name to description
@@ -480,6 +520,8 @@ fun FoodAnaliseScreen(
                                 }
                             )
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         selectedIngredient?.let { (name, desc) ->
                             AlertDialog(

@@ -23,21 +23,22 @@ class RuleEngineImpl @Inject constructor(
 
     override fun analise(ingredients: String): ProductAnalysesResult {
         val lowerCased = ingredients.lowercase()
-        val unhealthyIngredients = mutableMapOf<String, String>()
+        val harmfulIngredients = mutableMapOf<String, String>()
         var healthPercent = 100
 
-        harmfulIngredients.forEach { (key, value) ->
+        this.harmfulIngredients.forEach { (key, value) ->
             if (lowerCased.contains(key)) {
                 healthPercent -= value.harmfulPercent
-                unhealthyIngredients[key] = value.description
+                harmfulIngredients[key] = value.description
             }
         }
 
         if (healthPercent < 0) healthPercent = 0
 
         return ProductAnalysesResult(
+            ocrText = ingredients,
             healthPercent = healthPercent,
-            unhealthyIngredients = unhealthyIngredients
+            harmfulIngredients = harmfulIngredients
         )
     }
 
