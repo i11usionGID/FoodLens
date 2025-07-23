@@ -30,15 +30,16 @@ class FoodAnaliseViewModel @AssistedInject constructor(
 
     private fun processPhoto() {
         viewModelScope.launch {
+            _state.value = FoodAnaliseState.Loading
             try {
-                _state.value = FoodAnaliseState.Loading
-
                 val rawText = getTextFromPhotoUseCase(photoUri)
 
                 val analysisResult = analiseTextUseCase(rawText)
 
                 _state.value = FoodAnaliseState.Success(analysisResult)
 
+            } catch (e: IllegalArgumentException) {
+                _state.value = FoodAnaliseState.Error("${e.message}")
             } catch (e: Exception) {
                 _state.value = FoodAnaliseState.Error("Ошибка при обработке фото: ${e.message}")
             }

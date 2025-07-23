@@ -15,7 +15,9 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
-fun NavGraph() {
+fun NavGraph(
+    onGalleryImagePicked: ((Uri) -> Unit) -> Unit
+) {
     val navController = rememberNavController()
 
     NavHost(
@@ -24,8 +26,13 @@ fun NavGraph() {
     ) {
         composable(Screen.Welcome.route) {
             WelcomeScreen(
-                onCameraButtonClick = {
+                onOpenCameraCLick = {
                     navController.navigate(Screen.Camera.route)
+                },
+                onOpenGalleryClick = {
+                    onGalleryImagePicked { uri ->
+                        navController.navigate(Screen.Crop.createRoute(uri))
+                    }
                 }
             )
         }
@@ -59,6 +66,14 @@ fun NavGraph() {
             val croppedPhotoUri = Screen.FoodAnalise.getUri(it.arguments)
             FoodAnaliseScreen(
                 photoUri = croppedPhotoUri,
+                onTryAgain = {
+                    navController.navigate(Screen.Welcome.route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                },
                 onFoodAnaliseFinish = {
                     navController.navigate(Screen.Welcome.route) {
                         popUpTo(navController.graph.startDestinationId) {
