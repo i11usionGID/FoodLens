@@ -2,8 +2,10 @@ package com.example.foodlens.presentation.screens.analise
 
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -60,6 +64,7 @@ import com.example.foodlens.presentation.ui.theme.ExtendedColors
 import com.example.foodlens.presentation.ui.theme.LocalExtendedColors
 import kotlinx.coroutines.delay
 import kotlin.math.cos
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 @Composable
@@ -186,18 +191,9 @@ fun FoodAnaliseScreen(
 
                 is FoodAnaliseState.Success -> {
                     val result = currentState.result
-                    var showOcrDialog by remember { mutableStateOf(false) }
-                    var showPhotoBlock by remember { mutableStateOf(false) }
-                    var showRecommendationBlock by remember { mutableStateOf(false) }
-                    var showIndexDescription by remember { mutableStateOf(false) }
-                    var showDividingLine by remember { mutableStateOf(false) }
-                    var showUnhealthyIngredientsBlock by remember { mutableStateOf(false) }
                     showResults = true
-                    val index = "${result.healthPercent}%"
-                    val recommendation: String
                     val advice: List<String>
-                    val indexColor: Color
-                    val backgroundIndexColor: Color
+                    val recommendation: String
 
                     when {
                         result.healthPercent <= 15 -> {
@@ -207,8 +203,6 @@ fun FoodAnaliseScreen(
                                 "Рассмотрите более натуральные и полезные альтернативы.",
                                 "Обратитесь к специалисту по питанию для подбора замены."
                             )
-                            indexColor = extraColors.red300
-                            backgroundIndexColor = extraColors.red100
                         }
 
                         result.healthPercent <= 35 -> {
@@ -218,8 +212,6 @@ fun FoodAnaliseScreen(
                                 "Ищите альтернативы с натуральными ингредиентами.",
                                 "Рассмотрите домашние варианты с более полезными ингредиентами."
                             )
-                            indexColor = extraColors.red300
-                            backgroundIndexColor = extraColors.red100
                         }
 
                         result.healthPercent <= 50 -> {
@@ -229,8 +221,6 @@ fun FoodAnaliseScreen(
                                 "Обратите внимание на индивидуальные аллергены.",
                                 "Следите за размером порций."
                             )
-                            indexColor = extraColors.orange300
-                            backgroundIndexColor = extraColors.orange100
                         }
 
                         result.healthPercent <= 75 -> {
@@ -240,15 +230,11 @@ fun FoodAnaliseScreen(
                                 "Следите за размером порций.",
                                 "Обратите внимание на индивидуальные аллергены."
                             )
-                            indexColor = extraColors.orange300
-                            backgroundIndexColor = extraColors.orange100
                         }
 
                         result.healthPercent == 100 -> {
                             recommendation = "Отличный продукт!"
                             advice = emptyList()
-                            indexColor = MaterialTheme.colorScheme.primary
-                            backgroundIndexColor = extraColors.green300
                         }
 
                         else -> {
@@ -258,14 +244,23 @@ fun FoodAnaliseScreen(
                                 "Содержит преимущественно натуральные ингредиенты.",
                                 "Поддерживает общее здоровье при сбалансированном рационе."
                             )
-                            indexColor = MaterialTheme.colorScheme.primary
-                            backgroundIndexColor = extraColors.green300
                         }
                     }
 
+                    var showOcrDialog by remember { mutableStateOf(false) }
+                    var showPhotoBlock by remember { mutableStateOf(false) }
+                    var showRecommendationBlock by remember { mutableStateOf(false) }
+                    val animatedPercent by animateFloatAsState(
+                        targetValue = if (showRecommendationBlock) result.healthPercent.toFloat() else 0f,
+                        animationSpec = tween(durationMillis = 1500),
+                        label = "AnimatedPercent"
+                    )
                     val showRecommendations = remember(advice) {
                         List(advice.size) { mutableStateOf(false) }
                     }
+                    var showIndexDescription by remember { mutableStateOf(false) }
+                    var showDividingLine by remember { mutableStateOf(false) }
+                    var showUnhealthyIngredientsBlock by remember { mutableStateOf(false) }
 
                     if (showResults) {
                         LaunchedEffect(Unit) {
@@ -273,7 +268,11 @@ fun FoodAnaliseScreen(
                             showPhotoBlock = true
                             delay(1500)
                             showRecommendationBlock = true
-                            delay(1000)
+                            if (result.healthPercent < 10) {
+                                delay(1000)
+                            } else {
+                                delay(2500)
+                            }
                             showIndexDescription = true
                             delay(1000)
                             showDividingLine = true
@@ -345,27 +344,38 @@ fun FoodAnaliseScreen(
                                         contentDescription = "Фотография состава",
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(200.dp),
-                                        contentScale = ContentScale.Crop
+                                            .aspectRatio(16f / 9f),
+                                        contentScale = ContentScale.Fit
                                     )
+
+                                    Spacer(modifier = Modifier.height(16.dp))
 
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .background(
-                                                color = MaterialTheme.colorScheme.surface,
-                                                shape = RoundedCornerShape(8.dp)
-                                            )
-                                            .clickable {
-                                            showOcrDialog = true
-                                        },
+                                                color = MaterialTheme.colorScheme.surface
+                                            ),
                                         contentAlignment = Alignment.BottomEnd
                                     ) {
-                                        Text(
-                                            text = "распознанный текст",
-                                            color = extraColors.gray300,
-                                            fontSize = 12.sp
-                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .background(
+                                                    color = extraColors.gray100,
+                                                    shape = CircleShape
+                                                )
+                                                .clickable {
+                                                    showOcrDialog = true
+                                                }
+                                        ) {
+                                            Text(
+                                                text = "Распознанный текст",
+                                                modifier = Modifier.padding(horizontal = 8.dp),
+                                                color = extraColors.gray400,
+                                                fontSize = 12.sp
+                                            )
+                                        }
                                     }
 
                                     if (showOcrDialog) {
@@ -407,6 +417,18 @@ fun FoodAnaliseScreen(
                                         modifier.height(80.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
+                                        val backgroundIndexColor by animateColorAsState(
+                                            targetValue = if (showRecommendationBlock) getAnimatedBackgroundColor(extraColors, animatedPercent) else Color.Transparent,
+                                            animationSpec = tween(durationMillis = 1500),
+                                            label = "AnimatedBackgroundColor"
+                                        )
+
+                                        val indexColor by animateColorAsState(
+                                            targetValue = if (showRecommendationBlock) getAnimatedIndexColor(extraColors, animatedPercent) else Color.Transparent,
+                                            animationSpec = tween(durationMillis = 1500),
+                                            label = "AnimatedIndexColor"
+                                        )
+
                                         Box(
                                             modifier = Modifier
                                                 .size(80.dp)
@@ -417,10 +439,10 @@ fun FoodAnaliseScreen(
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Text(
-                                                text = index,
+                                                text = "${animatedPercent.roundToInt()}%",
                                                 color = indexColor,
                                                 fontSize = 24.sp,
-                                                fontWeight = FontWeight.SemiBold,
+                                                fontWeight = FontWeight.SemiBold
                                             )
                                         }
 
@@ -432,7 +454,7 @@ fun FoodAnaliseScreen(
                                         ) {
                                             Text(
                                                 text = "Индекс состава",
-                                                color = extraColors.gray400,
+                                                color = extraColors.gray500,
                                                 fontSize = 16.sp
                                             )
                                             AnimatedVisibility(visible = showIndexDescription) {
@@ -454,7 +476,7 @@ fun FoodAnaliseScreen(
                                                 modifier = Modifier
                                                     .fillMaxWidth()
                                                     .height(2.dp)
-                                                    .background(color = extraColors.gray100)
+                                                    .background(color = extraColors.gray150)
                                             )
                                         }
 
@@ -549,11 +571,12 @@ fun FoodAnaliseCard(
     content: @Composable () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+        ,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
         shape = MaterialTheme.shapes.medium
     ) {
         Column(
@@ -615,7 +638,7 @@ fun TextWithPoint(
 
         Text(
             text = text,
-            color = extraColors.gray400,
+            color = extraColors.gray500,
             fontSize = 16.sp
         )
     }
@@ -665,5 +688,27 @@ fun AnimatedMagnifierOverLogo() {
                 .size(120.dp),
             tint = Color.Black
         )
+    }
+}
+
+fun getAnimatedBackgroundColor(
+    extraColors: ExtendedColors,
+    percent: Float
+): Color {
+    return when {
+        percent <= 35 -> extraColors.red100
+        percent <= 75 -> extraColors.orange100
+        else -> extraColors.green300
+    }
+}
+@Composable
+fun getAnimatedIndexColor(
+    extraColors: ExtendedColors,
+    percent: Float
+): Color {
+    return when {
+        percent <= 35 -> extraColors.red300
+        percent <= 75 -> extraColors.orange300
+        else -> MaterialTheme.colorScheme.primary
     }
 }

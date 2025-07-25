@@ -76,7 +76,7 @@ fun WelcomeScreen(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
-                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+                elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
                 shape = MaterialTheme.shapes.medium
             ) {
                 Column(

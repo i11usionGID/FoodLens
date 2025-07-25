@@ -18,9 +18,11 @@ data class ExtendedColors(
     val purple100: Color,
     val purple200: Color,
     val gray100: Color,
+    val gray150: Color,
     val gray200: Color,
     val gray300: Color,
-    val gray400: Color
+    val gray400: Color,
+    val gray500: Color
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
@@ -39,8 +41,10 @@ val LocalExtendedColors = staticCompositionLocalOf {
         purple100 = Purple100,
         purple200 = Purple200,
         gray100 = Gray100,
+        gray150 = Gray150,
         gray200 = Gray200,
         gray300 = Gray300,
-        gray400 = Gray400
+        gray400 = Gray400,
+        gray500 = Gray500
     )
 }
