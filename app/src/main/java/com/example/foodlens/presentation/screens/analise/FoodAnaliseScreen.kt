@@ -768,7 +768,7 @@ fun AnimatedMagnifierOverLogo() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
+            .height(120.dp),
         contentAlignment = Alignment.Center
     ) {
         Icon(
