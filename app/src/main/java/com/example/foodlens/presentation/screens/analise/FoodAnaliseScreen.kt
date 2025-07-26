@@ -67,6 +67,17 @@ import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
+/**
+ * Экран показа результатов анализа продуктов. Отображает одно из трёх состояний в зависимости от результата анализа:
+ * - [FoodAnaliseState.Loading] — загрузка. Отображается анимированный с помощью функции [AnimatedMagnifierOverLogo] логотип, название и слоган приложения.
+ * - [FoodAnaliseState.Error] — ошибка. Отображается иконка ошибки, советы по исправлению и кнопка для возвращения на главный экран.
+ * - [FoodAnaliseState.Success] — успешно. Отображаются карточки с результатами анализа, включая [FoodAnaliseCard].
+ *
+ * @param modifier модификатор внешнего вида.
+ * @param photoUri URI исходной фотографии.
+ * @param viewModel ViewModel с состоянием анализа, создаётся через Hilt.
+ * @param onFoodAnaliseFinish колбэк при завершении анализа или ошибке — возврат на главный экран.
+ */
 @Composable
 fun FoodAnaliseScreen(
     modifier: Modifier = Modifier,
@@ -76,12 +87,13 @@ fun FoodAnaliseScreen(
             factory.create(photoUri)
         }
     ),
-    onTryAgain: () -> Unit,
     onFoodAnaliseFinish: () -> Unit
 ) {
+    /**
+     * - state — состояние экрана, получаемое из [FoodAnaliseViewModel].
+     * - extraColors — дополнительные цвета, не входящие в [MaterialTheme.colorScheme].
+     */
     val state by viewModel.state.collectAsState()
-    var showResults by remember { mutableStateOf(false) }
-    var selectedIngredient by remember { mutableStateOf<Pair<String, String>?>(null) }
     val extraColors = LocalExtendedColors.current
 
     Scaffold(
@@ -117,7 +129,11 @@ fun FoodAnaliseScreen(
                 }
 
                 is FoodAnaliseState.Error -> {
+                    /**
+                     * showError — флаг для начала анимации и показа элементов экрана. Запускается по истечении 1 секунды.
+                     */
                     var showError by remember { mutableStateOf(false) }
+
 
                     LaunchedEffect(Unit) {
                         delay(1000)
@@ -171,7 +187,7 @@ fun FoodAnaliseScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp),
-                                onClick = onTryAgain,
+                                onClick = onFoodAnaliseFinish,
                                 shape = RoundedCornerShape(12.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.primary,
@@ -190,8 +206,14 @@ fun FoodAnaliseScreen(
                 }
 
                 is FoodAnaliseState.Success -> {
+                    /**
+                     * - result — результат анализа состава ([com.example.foodlens.domain.model.ProductAnalysesResult]), полученный из [FoodAnaliseViewModel] при успешной обработке.
+                     * - showResults — флаг для начала анимации и показа карточек.
+                     * - advice — список рекомендаций, определяемый по индексу полезности.
+                     * - recommendation — текст рекомендации по покупке товара, определяемый по индексу полезности.
+                     */
                     val result = currentState.result
-                    showResults = true
+                    var showResults by remember { mutableStateOf(false) }
                     val advice: List<String>
                     val recommendation: String
 
@@ -247,7 +269,17 @@ fun FoodAnaliseScreen(
                         }
                     }
 
-                    var showOcrDialog by remember { mutableStateOf(false) }
+                    /**
+                     * - showOcrText — флаг для показа распознанного текста.
+                     * - showPhotoBlock — флаг для начала анимации и показа карточки с фотографией.
+                     * - showRecommendationBlock — флаг для начала анимации и показа карточки с рекомендациями.
+                     * - animatedPercent — анимированный процент полезности продукта (от 0 до значения, пришедшего из [com.example.foodlens.domain.model.ProductAnalysesResult]).
+                     * - showAdvice — флаг для начала анимации и показа рекомендаций.
+                     * - showDividingLine — флаг для начала анимации и показа разделительной черты.
+                     * - showRecommendation — флаг для начала анимации и показа рекомендации к покупке товара.
+                     * - showUnhealthyIngredientsBlock — флаг для начала анимации и показа карточки с найденными вредными ингредиентами.
+                     */
+                    var showOcrText by remember { mutableStateOf(false) }
                     var showPhotoBlock by remember { mutableStateOf(false) }
                     var showRecommendationBlock by remember { mutableStateOf(false) }
                     val animatedPercent by animateFloatAsState(
@@ -255,11 +287,11 @@ fun FoodAnaliseScreen(
                         animationSpec = tween(durationMillis = 1500),
                         label = "AnimatedPercent"
                     )
-                    val showRecommendations = remember(advice) {
+                    val showAdvice = remember(advice) {
                         List(advice.size) { mutableStateOf(false) }
                     }
-                    var showIndexDescription by remember { mutableStateOf(false) }
                     var showDividingLine by remember { mutableStateOf(false) }
+                    var showRecommendation by remember { mutableStateOf(false) }
                     var showUnhealthyIngredientsBlock by remember { mutableStateOf(false) }
 
                     if (showResults) {
@@ -273,10 +305,10 @@ fun FoodAnaliseScreen(
                             } else {
                                 delay(2500)
                             }
-                            showIndexDescription = true
+                            showRecommendation = true
                             delay(1000)
                             showDividingLine = true
-                            showRecommendations.forEachIndexed { _, state ->
+                            showAdvice.forEachIndexed { _, state ->
                                 state.value = true
                                 delay(1000)
                             }
@@ -285,6 +317,14 @@ fun FoodAnaliseScreen(
                         }
                     }
 
+                    showResults = true
+
+                    /**
+                     * Часть экрана, которая отрисовывается без задержки. Включает:
+                     * - [Text] с названием приложения;
+                     * - [Text] "Результаты анализа";
+                     * - кнопку выхода ([Icon], крестик).
+                     */
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -328,6 +368,13 @@ fun FoodAnaliseScreen(
 
                         Spacer(modifier = Modifier.height(24.dp))
 
+                        /**
+                         * Карточка с исходной фотографией. Включает:
+                         * - заголовок [CardTitle];
+                         * - контент:
+                         *   - [Image] — исходное изображение;
+                         *   - [Box], при нажатии на который появляется [AlertDialog] с распознанным текстом.
+                         */
                         AnimatedVisibility(visible = showPhotoBlock) {
                             FoodAnaliseCard(
                                 title = {
@@ -366,7 +413,7 @@ fun FoodAnaliseScreen(
                                                     shape = CircleShape
                                                 )
                                                 .clickable {
-                                                    showOcrDialog = true
+                                                    showOcrText = true
                                                 }
                                         ) {
                                             Text(
@@ -378,11 +425,11 @@ fun FoodAnaliseScreen(
                                         }
                                     }
 
-                                    if (showOcrDialog) {
+                                    if (showOcrText) {
                                         AlertDialog(
-                                            onDismissRequest = { showOcrDialog = false },
+                                            onDismissRequest = { showOcrText = false },
                                             confirmButton = {
-                                                Button(onClick = { showOcrDialog = false }) {
+                                                Button(onClick = { showOcrText = false }) {
                                                     Text("Закрыть")
                                                 }
                                             },
@@ -402,6 +449,16 @@ fun FoodAnaliseScreen(
 
                         Spacer(modifier = Modifier.height(24.dp))
 
+                        /**
+                         * Карточка с рекомендациями. Включает:
+                         * - заголовок [CardTitle];
+                         * - контент:
+                         *   - [Row], в котором находятся:
+                         *     - [Box] с динамическим фоном (по [backgroundIndexColor] и [getAnimatedBackgroundColor]) и индикатором полезности (по [indexColor] и [getAnimatedIndexColor]);
+                         *     - [Column] с [Text] "Индекс состава" и [Text], содержащим [recommendation].
+                         *   - Если индекс полезности равен 100, рекомендации не отображаются; иначе с анимацией показываются рекомендации в виде [TextWithPoint].
+                         */
+
                         AnimatedVisibility(visible = showRecommendationBlock) {
                             FoodAnaliseCard(
                                 title = {
@@ -418,13 +475,19 @@ fun FoodAnaliseScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         val backgroundIndexColor by animateColorAsState(
-                                            targetValue = if (showRecommendationBlock) getAnimatedBackgroundColor(extraColors, animatedPercent) else Color.Transparent,
+                                            targetValue = if (showRecommendationBlock) getAnimatedBackgroundColor(
+                                                extraColors,
+                                                animatedPercent
+                                            ) else Color.Transparent,
                                             animationSpec = tween(durationMillis = 1500),
                                             label = "AnimatedBackgroundColor"
                                         )
 
                                         val indexColor by animateColorAsState(
-                                            targetValue = if (showRecommendationBlock) getAnimatedIndexColor(extraColors, animatedPercent) else Color.Transparent,
+                                            targetValue = if (showRecommendationBlock) getAnimatedIndexColor(
+                                                extraColors,
+                                                animatedPercent
+                                            ) else Color.Transparent,
                                             animationSpec = tween(durationMillis = 1500),
                                             label = "AnimatedIndexColor"
                                         )
@@ -457,7 +520,7 @@ fun FoodAnaliseScreen(
                                                 color = extraColors.gray500,
                                                 fontSize = 16.sp
                                             )
-                                            AnimatedVisibility(visible = showIndexDescription) {
+                                            AnimatedVisibility(visible = showRecommendation) {
                                                 Text(
                                                     text = recommendation,
                                                     color = indexColor,
@@ -483,7 +546,7 @@ fun FoodAnaliseScreen(
                                         Spacer(modifier = Modifier.height(16.dp))
 
                                         advice.forEachIndexed { index, text ->
-                                            AnimatedVisibility(visible = showRecommendations[index].value) {
+                                            AnimatedVisibility(visible = showAdvice[index].value) {
                                                 Column {
                                                     TextWithPoint(extraColors, text)
                                                     Spacer(modifier = Modifier.height(8.dp))
@@ -499,6 +562,13 @@ fun FoodAnaliseScreen(
 
                         Spacer(modifier = Modifier.height(24.dp))
 
+                        /**
+                         * Карточка с вредными ингредиентами. Включает:
+                         * - заголовок [CardTitle];
+                         * - контент:
+                         *   - если вредные ингредиенты не обнаружены, отображается [TextWithPoint] с текстом "Не обнаружено";
+                         *   - иначе используется [FlowRow] с [Button] (вредные ингредиенты), при нажатии на которые открывается [AlertDialog] с описанием.
+                         */
                         AnimatedVisibility(visible = showUnhealthyIngredientsBlock) {
                             FoodAnaliseCard(
                                 title = {
@@ -517,6 +587,11 @@ fun FoodAnaliseScreen(
                                                 text = "Не обнаружено"
                                             )
                                         } else {
+                                            var selectedIngredient by remember {
+                                                mutableStateOf<Pair<String, String>?>(
+                                                    null
+                                                )
+                                            }
                                             FlowRow(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -537,27 +612,30 @@ fun FoodAnaliseScreen(
                                                     }
                                                 }
                                             }
+
+                                            selectedIngredient?.let { (name, desc) ->
+                                                AlertDialog(
+                                                    onDismissRequest = {
+                                                        selectedIngredient = null
+                                                    },
+                                                    confirmButton = {
+                                                        Button(onClick = {
+                                                            selectedIngredient = null
+                                                        }) {
+                                                            Text("Закрыть")
+                                                        }
+                                                    },
+                                                    title = { Text(text = name) },
+                                                    text = { Text(desc) },
+                                                    containerColor = MaterialTheme.colorScheme.background
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             )
                         }
-
                         Spacer(modifier = Modifier.height(16.dp))
-
-                        selectedIngredient?.let { (name, desc) ->
-                            AlertDialog(
-                                onDismissRequest = { selectedIngredient = null },
-                                confirmButton = {
-                                    Button(onClick = { selectedIngredient = null }) {
-                                        Text("Закрыть")
-                                    }
-                                },
-                                title = { Text(text = name) },
-                                text = { Text(desc) },
-                                containerColor = MaterialTheme.colorScheme.background
-                            )
-                        }
                     }
                 }
             }
@@ -565,14 +643,19 @@ fun FoodAnaliseScreen(
     }
 }
 
+/**
+ * Карточка для отображения контента с заголовком и телом.
+ *
+ * @param title заголовок карточки.
+ * @param content содержимое карточки.
+ */
 @Composable
 fun FoodAnaliseCard(
     title: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth()
-        ,
+        modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
@@ -590,6 +673,14 @@ fun FoodAnaliseCard(
     }
 }
 
+/**
+ * Заголовок карточки с иконкой.
+ *
+ * @param textTitle текст заголовка.
+ * @param icon ресурс иконки.
+ * @param iconContentDescription описание иконки для доступности.
+ * @param iconColor цвет иконки.
+ */
 @Composable
 fun CardTitle(
     textTitle: String,
@@ -618,6 +709,12 @@ fun CardTitle(
     }
 }
 
+/**
+ * Элемент текста с зелёной галочкой перед ним — используется для рекомендаций.
+ *
+ * @param extraColors расширенная цветовая палитра.
+ * @param text текст рекомендации.
+ */
 @Composable
 fun TextWithPoint(
     extraColors: ExtendedColors,
@@ -644,6 +741,10 @@ fun TextWithPoint(
     }
 }
 
+/**
+ * Анимация увеличительного стекла, вращающегося над "строчками "логотипа.
+ * Используется в состоянии загрузки данного экрана.
+ */
 @Composable
 fun AnimatedMagnifierOverLogo() {
     val angle = remember { Animatable(0f) }
@@ -691,6 +792,13 @@ fun AnimatedMagnifierOverLogo() {
     }
 }
 
+/**
+ * Возвращает цвет фона индикатора процента полезности продукта.
+ *
+ * @param extraColors расширенная цветовая палитра.
+ * @param percent процент полезности (0-100).
+ * @return цвет: красный при низком %, оранжевый при среднем и зелёный при высоком.
+ */
 fun getAnimatedBackgroundColor(
     extraColors: ExtendedColors,
     percent: Float
@@ -701,6 +809,14 @@ fun getAnimatedBackgroundColor(
         else -> extraColors.green300
     }
 }
+
+/**
+ * Возвращает цвет текста индекса состава продукта.
+ *
+ * @param extraColors расширенная цветовая палитра.
+ * @param percent процент полезности (0-100).
+ * @return цвет текста в зависимости от процента.
+ */
 @Composable
 fun getAnimatedIndexColor(
     extraColors: ExtendedColors,

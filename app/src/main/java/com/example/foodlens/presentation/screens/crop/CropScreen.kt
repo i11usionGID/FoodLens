@@ -10,6 +10,13 @@ import androidx.compose.ui.platform.LocalContext
 import com.yalantis.ucrop.UCrop
 import java.io.File
 
+/**
+ * Экран для обрезки изображения с использованием библиотеки uCrop.
+ *
+ * @param inputUri URI исходного изображения, которое нужно обрезать.
+ * @param onCropFinished Колбэк, вызываемый при успешной обрезке (результирующий URI).
+ * @param onCropCancelled Колбэк, вызываемый, если пользователь отменил обрезку.
+ */
 @Composable
 fun CropScreen(
     inputUri: Uri,
@@ -18,6 +25,7 @@ fun CropScreen(
 ) {
     val context = LocalContext.current
 
+    // Регистрация launcher'а для запуска внешнего Activity (uCrop)
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -30,18 +38,27 @@ fun CropScreen(
             onCropCancelled()
         }
     }
+
+    // Запускаем обрезку изображения, как только получим входной URI
     LaunchedEffect(inputUri) {
-        val destinationUri = Uri.fromFile(File(context.cacheDir, "cropped_${System.currentTimeMillis()}.jpg"))
+        // Создаём URI для обрезанного изображения во временной папке
+        val destinationUri = Uri.fromFile(
+            File(context.cacheDir, "cropped_${System.currentTimeMillis()}.jpg")
+        )
+
+        // Настраиваем параметры для uCrop
         val options = UCrop.Options().apply {
-            setCompressionQuality(80)
+            setCompressionQuality(100)
             setFreeStyleCropEnabled(true)
             setToolbarTitle("Обрезка")
         }
 
+        // Создаём Intent для запуска uCrop с исходным URI
         val intent = UCrop.of(inputUri, destinationUri)
             .withOptions(options)
             .getIntent(context)
 
+        // Запускаем uCrop через ранее зарегистрированный launcher
         launcher.launch(intent)
     }
 }

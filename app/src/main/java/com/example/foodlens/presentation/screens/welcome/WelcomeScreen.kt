@@ -43,7 +43,7 @@ import com.example.foodlens.R
  * - [Text] с кратким описанием возможностей приложения;
  * - [Card] с информацией о том, как работает приложение (включает в себя заголовок - [Text] и шаги -[InfoRow]);
  * - [GetPhotoButton] с возможностью сделать фотографию;
- * - [GetPhotoButton] с возможностью выбрать фотографию из галлереи.
+ * - [GetPhotoButton] с возможностью выбрать фотографию из галереи.
  *
  * @param modifier Модификатор для внешнего управления размещением.
  * @param onOpenCameraClick Обработчик клика по кнопке камеры.
@@ -168,7 +168,7 @@ fun WelcomeScreen(
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.primary,
                 iconId = R.drawable.ic_upload,
-                iconContentDescription = "Загрузить фото из галлереи",
+                iconContentDescription = "Загрузить фото из галереи",
                 text = "Загрузить из галереи"
             )
 

@@ -34,6 +34,17 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.foodlens.presentation.ui.theme.ExtendedColors
 import com.example.foodlens.presentation.ui.theme.LocalExtendedColors
 
+/**
+* Главный экран камеры. Включает:
+ * - верхнюю черную панель [Box];
+ * - превью камеры [CameraPreview];
+ * - нижнюю черную панель [Box];
+ * - кнопку для сохранения снимка [TakePhotoButton].
+*
+* @param modifier Модификатор для настройки внешнего вида.
+* @param viewModel ViewModel, содержащий бизнес-логику камеры (инжектируется через Hilt).
+* @param onTakePhotoClick Колбэк, вызываемый при успешной съёмке фотографии (возвращает Uri сделанной фотографии).
+*/
 @Composable
 fun CameraScreen(
     modifier: Modifier = Modifier,
@@ -44,6 +55,7 @@ fun CameraScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val extraColors = LocalExtendedColors.current
 
+    //Следим за появлением URI изображения в viewModel и передаём его в onTakePhotoClick
     LaunchedEffect(viewModel.imageUri.collectAsState().value) {
         viewModel.imageUri.value?.let(onTakePhotoClick)
     }
@@ -83,6 +95,12 @@ fun CameraScreen(
     }
 }
 
+/**
+ * Компонент кнопки съёмки фотографии в виде двойного круга.
+ *
+ * @param extraColors Пользовательские цвета темы.
+ * @param onTakePhotoClick Обработчик клика по кнопке.
+ */
 @Composable
 fun TakePhotoButton(
     extraColors: ExtendedColors,
@@ -114,6 +132,13 @@ fun TakePhotoButton(
     }
 }
 
+/**
+ * Компонент предпросмотра камеры с инициализацией Capture и Preview.
+ *
+ * @param context Контекст, необходимый для инициализации камеры.
+ * @param lifecycleOwner Владелец жизненного цикла, для привязки камеры.
+ * @param onImageCaptureReady Колбэк, предоставляющий объект ImageCapture при готовности.
+ */
 @Composable
 fun CameraPreview(
     context: Context,
@@ -121,6 +146,8 @@ fun CameraPreview(
     onImageCaptureReady: (ImageCapture) -> Unit
 ) {
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+
+    // Инициализация PreviewView (View, предоставляющий превью камеры)
     val previewView = remember {
         PreviewView(context).apply {
             layoutParams = FrameLayout.LayoutParams(
@@ -137,6 +164,7 @@ fun CameraPreview(
         }
     )
 
+    // Настройка камеры при инициализации
     LaunchedEffect(cameraProviderFuture) {
         val cameraProvider = cameraProviderFuture.get()
         val preview = Preview.Builder().build().also {
