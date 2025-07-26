@@ -1,5 +1,9 @@
 package com.example.foodlens.presentation.screens.welcome
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,15 +37,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.foodlens.R
 
+/**
+ * Главный экран приложения. Включает:
+ * - [Text] с названием приложения;
+ * - [Text] с кратким описанием возможностей приложения;
+ * - [Card] с информацией о том, как работает приложение (включает в себя заголовок - [Text] и шаги -[InfoRow]);
+ * - [GetPhotoButton] с возможностью сделать фотографию;
+ * - [GetPhotoButton] с возможностью выбрать фотографию из галлереи.
+ *
+ * @param modifier Модификатор для внешнего управления размещением.
+ * @param onOpenCameraClick Обработчик клика по кнопке камеры.
+ * @param onTakePhotoFromGalleryClick Обработчик клика по кнопке загрузки из галереи.
+ */
 @Composable
 fun WelcomeScreen(
     modifier: Modifier = Modifier,
-    onOpenCameraCLick: () -> Unit,
-    onOpenGalleryClick: () -> Unit
+    onOpenCameraClick: () -> Unit,
+    onTakePhotoFromGalleryClick: (Uri) -> Unit
 ) {
+    val photoPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            uri?.let {
+                onTakePhotoFromGalleryClick(it)
+            }
+        }
+    )
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier
+            .background(
+                color = MaterialTheme.colorScheme.background
+            ),
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -49,6 +76,7 @@ fun WelcomeScreen(
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
 
             Text(
                 text = "FoodLens",
@@ -120,10 +148,8 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             GetPhotoButton(
-                onOpenCLick = onOpenCameraCLick,
+                onOpenCLick = onOpenCameraClick,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 iconId = R.drawable.ic_camera_filled,
@@ -134,7 +160,11 @@ fun WelcomeScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             GetPhotoButton(
-                onOpenCLick = onOpenGalleryClick,
+                onOpenCLick = {
+                    photoPicker.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                },
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.primary,
                 iconId = R.drawable.ic_upload,
@@ -147,6 +177,14 @@ fun WelcomeScreen(
     }
 }
 
+/**
+ * Элемент строки с иконкой и текстом (используется в описании шагов работы программы).
+ *
+ * @param iconId ID иконки.
+ * @param backGroundColor Цвет фона круга с иконкой.
+ * @param iconColor Цвет иконки.
+ * @param text Описание шага.
+ */
 @Composable
 fun InfoRow(
     iconId: Int,
@@ -182,6 +220,16 @@ fun InfoRow(
     }
 }
 
+/**
+ * Компонент кнопки действия (с фото-иконкой).
+ *
+ * @param onOpenCLick Обработчик клика.
+ * @param containerColor Цвет фона кнопки.
+ * @param contentColor Цвет текста и иконки.
+ * @param iconId ID иконки слева.
+ * @param iconContentDescription Описание иконки.
+ * @param text Текст кнопки.
+ */
 @Composable
 fun GetPhotoButton(
     onOpenCLick: () -> Unit,
