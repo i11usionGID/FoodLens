@@ -19,20 +19,27 @@
 
 ## Демонстрация
 
-### Вредный состав
-![BadProduct.gif](docs/BadProduct.gif)
+<div align="center">
 
+<h3>Вредный состав</h3>  
+<img src="docs/BadProduct.gif" width="300"/>
 
-### Умеренный состав
-![MediumProduct.gif](docs/MediumProduct.gif)
+---
 
+<h3>Умеренный состав</h3>  
+<img src="docs/MediumProduct.gif" width="300"/>
 
-### Полезный состав
-![GreatProduct.gif](docs/GreatProduct.gif)
+---
 
+<h3>Полезный состав</h3>  
+<img src="docs/GreatProduct.gif" width="300"/>
 
-### На фотографии нет текста
-![Error.gif](docs/Error.gif)
+---
+
+<h3>На фотографии нет текста</h3>  
+<img src="docs/Error.gif" width="300"/>
+
+</div>
 
 ---
 

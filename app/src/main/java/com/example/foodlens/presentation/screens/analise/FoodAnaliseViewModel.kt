@@ -36,7 +36,7 @@ class FoodAnaliseViewModel @AssistedInject constructor(
      */
     private val _state = MutableStateFlow<FoodAnaliseState>(FoodAnaliseState.Loading)
     /**
-     * Публичный поток состояния анализа. Используется UI для отображения состояния.
+     * Публичное состояние анализа, доступное для подписки в UI.
      */
     val state = _state.asStateFlow()
 

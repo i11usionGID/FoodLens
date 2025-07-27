@@ -75,8 +75,8 @@ import kotlin.math.sin
  *
  * @param modifier модификатор внешнего вида.
  * @param photoUri URI исходной фотографии.
- * @param viewModel ViewModel с состоянием анализа, создаётся через Hilt.
- * @param onFoodAnaliseFinish колбэк при завершении анализа или ошибке — возврат на главный экран.
+ * @param viewModel ViewModel с состоянием анализа, создаётся с помощью Hilt.
+ * @param onFoodAnaliseFinish колбэк при завершении анализа или ошибке — возвращает на главный экран.
  */
 @Composable
 fun FoodAnaliseScreen(

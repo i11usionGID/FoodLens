@@ -3,6 +3,13 @@ package com.example.foodlens.presentation.ui.theme
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
+/**
+ * Класс, содержащий расширенную палитру цветов,
+ * используемых в приложении FoodLens.
+ *
+ * Цвета сгруппированы по оттенкам и предназначены
+ * для стилизации компонентов интерфейса.
+ */
 data class ExtendedColors(
     val black: Color,
     val red100: Color,
@@ -25,6 +32,10 @@ data class ExtendedColors(
     val gray500: Color
 )
 
+/**
+ * CompositionLocal, предоставляющий доступ к расширенной палитре цветов
+ * внутри Composable-функций.
+ */
 val LocalExtendedColors = staticCompositionLocalOf {
     ExtendedColors(
         black = Black,

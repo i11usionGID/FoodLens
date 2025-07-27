@@ -147,7 +147,7 @@ fun CameraPreview(
 ) {
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
-    // Инициализация PreviewView (View, предоставляющий превью камеры)
+    //Инициализация PreviewView (View, предоставляющий превью камеры)
     val previewView = remember {
         PreviewView(context).apply {
             layoutParams = FrameLayout.LayoutParams(
@@ -164,7 +164,7 @@ fun CameraPreview(
         }
     )
 
-    // Настройка камеры при инициализации
+    //Настройка камеры при инициализации
     LaunchedEffect(cameraProviderFuture) {
         val cameraProvider = cameraProviderFuture.get()
         val preview = Preview.Builder().build().also {

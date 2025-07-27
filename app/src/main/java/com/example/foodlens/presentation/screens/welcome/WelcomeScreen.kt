@@ -132,7 +132,7 @@ fun WelcomeScreen(
                         R.drawable.ic_brain,
                         MaterialTheme.colorScheme.secondaryContainer,
                         MaterialTheme.colorScheme.secondary,
-                        "AI проанализирует ингридиенты состава"
+                        "AI проанализирует ингредиенты состава"
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
